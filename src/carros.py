@@ -21,6 +21,8 @@ COMBUSTIVEIS = ["Gasolina", "Gasóleo", "Elétrico", "Híbrido", "GPL"]
 carros = []
 
 
+
+
 # ── CREATE ────────────────────────────────────────────────────────────────────
 
 def adicionar_carro(marca, modelo, matricula, ano, mes, combustivel, potencia_cv, cilindrada_cc):
