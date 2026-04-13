@@ -20,6 +20,7 @@ COMBUSTIVEIS = ["Gasolina", "Gasóleo", "Elétrico", "Híbrido", "GPL"]
 # Lista em memória que guarda todos os carros durante a execução
 carros = []
 
+#teste
 
 
 
