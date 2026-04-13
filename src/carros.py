@@ -12,6 +12,7 @@ from utils import gerar_id, encontrar_por_id
 
 #teste
 
+#hello world teste git again
 
 # Lista com os tipos de combustível aceites pelo sistema
 COMBUSTIVEIS = ["Gasolina", "Gasóleo", "Elétrico", "Híbrido", "GPL"]
