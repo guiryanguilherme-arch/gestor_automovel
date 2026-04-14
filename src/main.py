@@ -59,13 +59,12 @@ def main():
             mes        = input("Mês (1-12): ").strip()
 
             # Mostra os combustíveis disponíveis e pede escolha por número
-            print("Combustíveis:", ", ".join(f"{i+1}.{c}" for i, c in enumerate(COMBUSTIVEIS)))
+            print("Combustíveis:")
+            for i, c in enumerate(COMBUSTIVEIS, 1):
+                print(f"  {i}. {c}")
             op_comb    = input("Escolha o número: ").strip()
             potencia   = input("Potência (cv): ").strip()
             cilindrada = input("Cilindrada (cc): ").strip()
-
-
-            #teste
 
 
             codigo, resultado = adicionar_carro(marca, modelo, matricula, ano, mes, op_comb, potencia, cilindrada)
