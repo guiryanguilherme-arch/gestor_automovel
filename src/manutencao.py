@@ -89,6 +89,7 @@ def criar_manutencao(id_carro, tipo, data_criacao, custo_orcamento, descricao,
 
 # ── READ ──────────────────────────────────────────────────────────────────────
 
+
 def listar_manutencoes():
     """
     Devolve a lista completa de manutenções registadas.

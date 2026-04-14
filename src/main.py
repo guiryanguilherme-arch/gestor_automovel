@@ -67,11 +67,7 @@ def main():
 
             #teste
 
-            dados = {
-                "marca": marca, "modelo": modelo, "matricula": matricula,
-                "ano": ano, "mes": mes, "combustivel": op_comb,
-                "potencia_cv": potencia, "cilindrada_cc": cilindrada
-            }
+
             codigo, resultado = adicionar_carro(marca, modelo, matricula, ano, mes, op_comb, potencia, cilindrada)
             if codigo == 201:
                 print(f"✅ Carro adicionado com ID {resultado['id']}.")
