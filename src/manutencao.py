@@ -8,9 +8,9 @@
 #   500 → erro nos dados fornecidos
 # A validação de datas é feita aqui diretamente, antes de guardar os dados.
 
+
 from datetime import datetime
 from utils import gerar_id, encontrar_por_id
-
 
 # Lista com todos os tipos de manutenção disponíveis no sistema
 TIPOS = [
@@ -70,6 +70,14 @@ def criar_manutencao(id_carro, tipo, data_criacao, custo_orcamento, descricao,
     # Validar data de manutenção se fornecida
     if data_manutencao and not _validar_data(data_manutencao):
         return 500, "Data de manutenção inválida. Usa o formato DD-MM-YYYY."
+
+    # Converter custos para float (o input() devolve sempre strings)
+    try:
+        custo_orcamento = float(custo_orcamento)
+        if custo_final is not None:
+            custo_final = float(custo_final)
+    except (ValueError, TypeError):
+        return 500, "Custo inválido. Introduz um número válido."
 
     manut = {
         "id":              gerar_id(manutencoes),  # ID único gerado automaticamente
