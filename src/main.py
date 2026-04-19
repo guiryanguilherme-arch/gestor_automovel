@@ -4,6 +4,8 @@
 # Trata os códigos HTTP devolvidos pelas funções de carros.py e manutencao.py:
 #   200 → sucesso | 201 → criado | 404 → não encontrado | 409 → conflito | 500 → erro
 
+
+
 from carros import (
     adicionar_carro,
     listar_carros,
@@ -29,7 +31,15 @@ from manutencao import (
     TIPOS
 )
 
-#teste git...
+
+
+def ler_id(prompt):
+    """Lê um ID introduzido pelo utilizador. Devolve -1 se não for um número válido."""
+    valor = input(prompt).strip()
+    try:
+        return int(valor)
+    except ValueError:
+        return -1
 
 def main():
     while True:
@@ -49,22 +59,21 @@ def main():
         op = input("\n👉 ").strip()
 
         # ── CARROS ────────────────────────────────────────────────────────────
-
+        # Recolhe os dados do novo carro e tenta adicionar
         if op == "1":
-            # Recolhe os dados do novo carro e tenta adicionar
             print("\n── Adicionar Carro ──")
-            marca      = input("Marca: ").strip()
-            modelo     = input("Modelo: ").strip()
-            matricula  = input("Matrícula (ex: AB-12-CD): ").strip()
-            ano        = input("Ano: ").strip()
-            mes        = input("Mês (1-12): ").strip()
+            marca = input("Marca: ").strip()
+            modelo = input("Modelo: ").strip()
+            matricula = input("Matrícula (ex: AB-12-CD): ").strip()
+            ano = input("Ano: ").strip()
+            mes = input("Mês (1-12): ").strip()
 
             # Mostra os combustíveis disponíveis e pede escolha por número
             print("Combustíveis:")
             for i, c in enumerate(COMBUSTIVEIS, 1):
                 print(f"  {i}. {c}")
-            op_comb    = input("Escolha o número: ").strip()
-            potencia   = input("Potência (cv): ").strip()
+            op_comb = input("Escolha o número: ").strip()
+            potencia = input("Potência (cv): ").strip()
             cilindrada = input("Cilindrada (cc): ").strip()
 
 
@@ -89,8 +98,8 @@ def main():
                 # Após listar, pergunta se quer ver o histórico de manutenções de um carro
                 ver = input("\nVer histórico de manutenções de um carro? (s/n): ").strip().lower()
                 if ver == "s":
-                    id_carro = input("ID do carro: ").strip()
-                    cod_c, res_c = obter_carro(int(id_carro) if id_carro.isdigit() else -1)
+                    id_carro = ler_id("ID do carro: ")
+                    cod_c, res_c = obter_carro(id_carro)
                     if cod_c != 200:
                         print(f"❌ Erro {cod_c}: {res_c}")
                     else:
@@ -112,8 +121,8 @@ def main():
         elif op == "3":
             # Atualiza campos permitidos de um carro (Enter para manter valor atual)
             print("\n── Atualizar Carro ──")
-            id_carro = input("ID do carro: ").strip()
-            cod_c, carro = obter_carro(int(id_carro) if id_carro.isdigit() else -1)
+            id_carro = ler_id("ID do carro: ")
+            cod_c, carro = obter_carro(id_carro)
             if cod_c != 200:
                 print(f"❌ Erro {cod_c}: {carro}")
                 continue
@@ -140,10 +149,10 @@ def main():
         elif op == "4":
             # Remove o carro e todas as manutenções associadas após confirmação
             print("\n── Remover Carro ──")
-            id_carro = input("ID do carro: ").strip()
+            id_carro = ler_id("ID do carro: ")
             confirmar = input("Tens a certeza? (s/n): ").strip().lower()
             if confirmar == "s":
-                codigo, resultado = remover_carro(int(id_carro) if id_carro.isdigit() else -1, manutencoes)
+                codigo, resultado = remover_carro(id_carro, manutencoes)
                 if codigo == 200:
                     print(f"✅ {resultado}")
                 else:
@@ -159,8 +168,8 @@ def main():
                 print("❌ Não existem carros registados.")
                 continue
 
-            id_carro = input("ID do carro: ").strip()
-            cod_c, _ = obter_carro(int(id_carro) if id_carro.isdigit() else -1)
+            id_carro = ler_id("ID do carro: ")
+            cod_c, _ = obter_carro(id_carro)
             if cod_c != 200:
                 print("❌ Carro não encontrado.")
                 continue
@@ -192,8 +201,8 @@ def main():
         elif op == "6":
             # Atualiza descrição e/ou custo final de uma manutenção
             print("\n── Atualizar Manutenção ──")
-            id_manut = input("ID da manutenção: ").strip()
-            cod_m, m = obter_manutencao(int(id_manut) if id_manut.isdigit() else -1)
+            id_manut = ler_id("ID da manutenção: ")
+            cod_m, m = obter_manutencao(id_manut)
             if cod_m != 200:
                 print(f"❌ Erro {cod_m}: {m}")
                 continue
@@ -216,10 +225,10 @@ def main():
         elif op == "7":
             # Remove uma manutenção após confirmação
             print("\n── Remover Manutenção ──")
-            id_manut = input("ID da manutenção: ").strip()
+            id_manut = ler_id("ID da manutenção: ")
             confirmar = input("Tens a certeza? (s/n): ").strip().lower()
             if confirmar == "s":
-                codigo, resultado = remover_manutencao(int(id_manut) if id_manut.isdigit() else -1)
+                codigo, resultado = remover_manutencao(int(id_manut))
                 if codigo == 200:
                     print(f"✅ {resultado}")
                 else:
@@ -228,8 +237,8 @@ def main():
         elif op == "8":
             # Muda o estado de uma manutenção de 'pendente' para 'concluída'
             print("\n── Marcar como Concluída ──")
-            id_manut = input("ID da manutenção: ").strip()
-            codigo, resultado = atualizar_estado(int(id_manut) if id_manut.isdigit() else -1, "concluída")
+            id_manut = ler_id("ID da manutenção: ")
+            codigo, resultado = atualizar_estado(id_manut, "concluída")
             if codigo == 200:
                 print(f"✅ {resultado}")
             else:
@@ -245,7 +254,9 @@ def main():
             print(f"Total carros:         {total_c}")
             print(f"Total manutenções:    {total_m}")
             print(f"Total gasto:          {gasto} €")
-            print(f"Média por manutenção: {media if cod_med == 200 else 0} €")
+            if cod_med != 200:
+                media = 0
+            print(f"Média por manutenção: {media} €")
             cod_cara, mais_cara = manutencao_mais_cara()
             if cod_cara == 200:
                 print(f"Manutenção mais cara: [{mais_cara['id']}] {mais_cara['tipo']}")
