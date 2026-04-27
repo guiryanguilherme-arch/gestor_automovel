@@ -3,9 +3,6 @@
 # Contém o menu principal e toda a interação com o utilizador.
 # Trata os códigos HTTP devolvidos pelas funções de carros.py e manutencao.py:
 #   200 → sucesso | 201 → criado | 404 → não encontrado | 409 → conflito | 500 → erro
-
-
-
 from carros import (
     adicionar_carro,
     listar_carros,
