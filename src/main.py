@@ -57,7 +57,6 @@ def main():
         print("0. Sair")
 
         op = input("\n👉 ").strip()
-
         # ── CARROS ────────────────────────────────────────────────────────────
         # Recolhe os dados do novo carro e tenta adicionar
         if op == "1":
