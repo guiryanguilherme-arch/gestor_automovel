@@ -8,7 +8,6 @@
 #   500 → erro nos dados fornecidos
 # A validação de datas é feita aqui diretamente, antes de guardar os dados.
 
-
 from datetime import datetime
 from utils import gerar_id, encontrar_por_id
 
