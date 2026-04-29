@@ -94,6 +94,17 @@ def procurar_por_matricula(matricula):
     return 200, resultado
 
 
+def listar_carros_por_cliente(id_cliente):
+    """
+    Devolve todos os carros associados a um cliente específico.
+    Devolve (200, lista) em caso de sucesso.
+    Devolve (404, mensagem) se não existirem carros para esse cliente.
+    """
+    resultado = [c for c in carros if c["id_cliente"] == id_cliente]
+    if not resultado:
+        return 404, f"Nenhum carro encontrado para o cliente com ID {id_cliente}."
+    return 200, resultado
+
 def total_carros():
     """Devolve (200, total) com o número total de carros registados."""
     return 200, len(carros)
