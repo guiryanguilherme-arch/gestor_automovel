@@ -43,7 +43,7 @@ def adicionar_carro(id_cliente,marca, modelo, matricula, ano, mes, combustivel, 
 
     carro = {
         "id":            gerar_id(carros),    # ID único gerado automaticamente
-        "id_cliente": id_cliente, 
+        "id_cliente": id_cliente,
         "marca":         marca,
         "modelo":        modelo,
         "matricula":     matricula.upper(),   # Guardada sempre em maiúsculas
