@@ -24,7 +24,7 @@ carros = []
 
 # ── CREATE ────────────────────────────────────────────────────────────────────
 
-def adicionar_carro(marca, modelo, matricula, ano, mes, combustivel, potencia_cv, cilindrada_cc):
+def adicionar_carro(id_cliente,marca, modelo, matricula, ano, mes, combustivel, potencia_cv, cilindrada_cc):
     """
     Cria um novo carro e adiciona-o à lista.
     Verifica se a matrícula já existe antes de adicionar.
