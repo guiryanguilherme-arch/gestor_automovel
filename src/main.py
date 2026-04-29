@@ -73,7 +73,7 @@ def main():
             cilindrada = input("Cilindrada (cc): ").strip()
 
 
-            codigo, resultado = adicionar_carro(marca, modelo, matricula, ano, mes, op_comb, potencia, cilindrada)
+            codigo, resultado = adicionar_carro(marca, modelo, matricula, ano, mes, op_comb, potencia, cilindrada_)
             if codigo == 201:
                 print(f"✅ Carro adicionado com ID {resultado['id']}.")
             elif codigo == 409:
