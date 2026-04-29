@@ -8,8 +8,7 @@
 #   409 → conflito (ex: matrícula duplicada)
 #   500 → erro nos dados fornecidos#ah
 from utils import gerar_id, encontrar_por_id
-#ag
-#teste
+
 
 #hello world teste git again
 
