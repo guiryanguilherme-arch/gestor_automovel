@@ -159,7 +159,7 @@ def main():
         elif op == "5":
             # Regista uma nova manutenção para um carro existente
             print("\n── Registar Manutenção ──")
-            cod_l, res_l = listar_carros()
+            cod_l,= listar_carros()
             if cod_l != 200:
                 print("❌ Não existem carros registados.")
                 continue
