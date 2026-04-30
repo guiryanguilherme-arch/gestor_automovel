@@ -166,7 +166,7 @@ def main():
             if codigo == 201:
                 print(f"✅ Oficina '{resultado['nome']}' adicionada com ID {resultado['id']}.")
             elif codigo == 409:
-                print(f"❌ Conflito: {resultado}")
+                print(print(f"✅ Removido com sucesso."))
             else:
                 print(f"❌ Erro {codigo}: {resultado}")
 
@@ -220,7 +220,7 @@ def main():
             if confirmar == "s":
                 codigo, resultado = remover_oficina(id_oficina, manutencoes)
                 if codigo == 200:
-                    print(f"✅ {resultado}")
+                    print(print(f"✅ Removido com sucesso."))
                 else:
                     print(f"❌ Erro {codigo}: {resultado}")
 
