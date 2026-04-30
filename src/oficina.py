@@ -24,7 +24,7 @@ def adicionar_oficina(nome,morada,telefone,email):
     if not nome or not morada or not telefone or not email:
         return 500, "Todos os campos são obrigatórios."
 
-        # Verificar email duplicado
+    # Verificar email duplicado (sem indentação extra)
     if any(o["email"] == email for o in oficinas):
         return 409, f"Email '{email}' já está registado."
 
