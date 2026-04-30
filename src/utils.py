@@ -3,7 +3,7 @@
 # Contém: geração de IDs, busca por ID, validação de números e operações sobre listas.
 # Nota: validação de datas está em manutencao.py, onde é usada diretamente.
 
-
+#alteracaao teste
 # ── IDs ───────────────────────────────────────────────────────────────────────
 
 def gerar_id(lista):
