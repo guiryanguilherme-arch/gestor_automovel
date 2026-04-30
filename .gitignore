@@ -1,7 +1,5 @@
 
-/src/__pycache__/carros.cpython-313.pyc
-/src/__pycache__/manutencao.cpython-313.pyc
-/src/__pycache__/utils.cpython-313.pyc
+/src/__pycache__/*
 /.idea/inspectionProfiles/profiles_settings.xml
 /.idea/GestorAutomovel.iml
 /.idea/misc.xml
