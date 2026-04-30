@@ -118,4 +118,4 @@ def remover_cliente(id_cliente, carros):
         return 409, "Não é possível apagar o cliente pois tem carros associados."
 
     clientes.remove(cliente)
-    return 200, f"Cliente '{cliente['nome']}' removido com sucesso."
+    return 200,id_cliente
