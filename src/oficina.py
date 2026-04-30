@@ -106,5 +106,5 @@ def remover_oficina(id_oficina, manutencoes):
         return 409, "Não é possível apagar a oficina pois tem manutenções associadas."
 
     oficinas.remove(oficina)
-    return 200, f"Oficina '{oficina['nome']}' removida com sucesso."
+    return 200, id_oficina
 
