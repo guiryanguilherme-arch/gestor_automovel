@@ -8,7 +8,6 @@
 #   500 → erro nos dados fornecidos
 # A validação de datas é feita aqui diretamente, antes de guardar os dados.
 
-
 from datetime import datetime
 from utils import gerar_id, encontrar_por_id
 
@@ -55,7 +54,7 @@ def _validar_data(data_str):
 
 # ── CREATE ────────────────────────────────────────────────────────────────────
 
-def criar_manutencao(id_carro, tipo, data_criacao, custo_orcamento, descricao,
+def criar_manutencao(id_carro,id_oficina, tipo, data_criacao, custo_orcamento, descricao,
                      data_manutencao=None, custo_final=None, folha_obra_id=None):
     """
     Cria uma nova manutenção e adiciona-a à lista.
@@ -82,6 +81,7 @@ def criar_manutencao(id_carro, tipo, data_criacao, custo_orcamento, descricao,
     manut = {
         "id":              gerar_id(manutencoes),  # ID único gerado automaticamente
         "id_carro":        id_carro,               # Referência ao carro associado (FK)
+        "id_oficina": id_oficina,                  # Id unico de oficina
         "tipo":            tipo,                   # Tipo de manutenção (ver lista TIPOS)
         "data_criacao":    data_criacao,            # Data de registo (string DD-MM-YYYY)
         "data_manutencao": data_manutencao,         # Data de execução (opcional, DD-MM-YYYY)
@@ -130,6 +130,18 @@ def listar_por_carro(id_carro):
     resultado = [m for m in manutencoes if m["id_carro"] == id_carro]
     if not resultado:
         return 404, f"Nenhuma manutenção encontrada para o carro com ID {id_carro}."
+    return 200, resultado
+
+
+def listar_por_oficina(id_oficina):
+    """
+    Devolve todas as manutenções de uma oficina específica.
+    Devolve (200, lista) em caso de sucesso.
+    Devolve (404, mensagem) se não existirem manutenções para essa oficina.
+    """
+    resultado = [m for m in manutencoes if m["id_oficina"] == id_oficina]
+    if not resultado:
+        return 404, f"Nenhuma manutenção encontrada para a oficina com ID {id_oficina}."
     return 200, resultado
 
 

@@ -8,8 +8,7 @@
 #   409 → conflito (ex: matrícula duplicada)
 #   500 → erro nos dados fornecidos#ah
 from utils import gerar_id, encontrar_por_id
-#ag
-#teste
+
 
 #hello world teste git again
 
@@ -25,7 +24,7 @@ carros = []
 
 # ── CREATE ────────────────────────────────────────────────────────────────────
 
-def adicionar_carro(marca, modelo, matricula, ano, mes, combustivel, potencia_cv, cilindrada_cc):
+def adicionar_carro(id_cliente,marca, modelo, matricula, ano, mes, combustivel, potencia_cv, cilindrada_cc):
     """
     Cria um novo carro e adiciona-o à lista.
     Verifica se a matrícula já existe antes de adicionar.
@@ -44,6 +43,7 @@ def adicionar_carro(marca, modelo, matricula, ano, mes, combustivel, potencia_cv
 
     carro = {
         "id":            gerar_id(carros),    # ID único gerado automaticamente
+        "id_cliente": id_cliente,
         "marca":         marca,
         "modelo":        modelo,
         "matricula":     matricula.upper(),   # Guardada sempre em maiúsculas
@@ -93,6 +93,17 @@ def procurar_por_matricula(matricula):
         return 404, f"Nenhum carro encontrado com matrícula '{matricula.upper()}'."
     return 200, resultado
 
+
+def listar_carros_por_cliente(id_cliente):
+    """
+    Devolve todos os carros associados a um cliente específico.
+    Devolve (200, lista) em caso de sucesso.
+    Devolve (404, mensagem) se não existirem carros para esse cliente.
+    """
+    resultado = [c for c in carros if c["id_cliente"] == id_cliente]
+    if not resultado:
+        return 404, f"Nenhum carro encontrado para o cliente com ID {id_cliente}."
+    return 200, resultado
 
 def total_carros():
     """Devolve (200, total) com o número total de carros registados."""
