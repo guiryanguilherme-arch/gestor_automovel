@@ -9,7 +9,8 @@
 #   500 → erro nos dados fornecidos#ah
 from utils import gerar_id, encontrar_por_id
 
-
+import json
+import os
 #hello world teste git again
 
 # Lista com os tipos de combustível aceites pelo sistema
@@ -17,10 +18,7 @@ COMBUSTIVEIS = ["Gasolina", "Gasóleo", "Elétrico", "Híbrido", "GPL"]
 
 # Lista em memória que guarda todos os carros durante a execução
 carros = []
-
-#teste
-
-
+FICHEIRO_CARROS = "carros.json"
 
 # ── CREATE ────────────────────────────────────────────────────────────────────
 
