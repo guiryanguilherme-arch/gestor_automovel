@@ -20,6 +20,16 @@ COMBUSTIVEIS = ["Gasolina", "Gasóleo", "Elétrico", "Híbrido", "GPL"]
 carros = []
 FICHEIRO_CARROS = "carros.json"
 
+#duas novas funcoes desta entidade
+def guardar_carros():
+    with open(FICHEIRO_CARROS, "w", encoding="utf-8") as f:
+        json.dump(carros, f, indent=4, ensure_ascii=False)
+        
+def carregar_carros():
+    global carros
+    if os.path.exists(FICHEIRO_CARROS):
+        with open(FICHEIRO_CARROS, "r", encoding="utf-8") as f:
+            carros = json.load(f)
 # ── CREATE ────────────────────────────────────────────────────────────────────
 
 def adicionar_carro(id_cliente,marca, modelo, matricula, ano, mes, combustivel, potencia_cv, cilindrada_cc):
