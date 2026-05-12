@@ -6,9 +6,9 @@
 #   200 → sucesso
 #   404 → não encontrado
 #   409 → conflito (ex: matrícula duplicada)
-#   500 → erro nos dados fornecidos#ah
-from utils import gerar_id, encontrar_por_id
+#   500 → erro nos dados fornecidos
 
+from utils import gerar_id, encontrar_por_id
 import json
 import os
 
