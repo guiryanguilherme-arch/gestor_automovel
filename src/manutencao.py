@@ -10,6 +10,8 @@
 
 from datetime import datetime
 from utils import gerar_id, encontrar_por_id
+import json
+import os
 
 # Lista com todos os tipos de manutenção disponíveis no sistema
 TIPOS = [
@@ -33,8 +35,17 @@ TIPOS = [
 
 # Lista em memória que guarda todas as manutenções durante a execução
 manutencoes = []
+FICHEIRO_MANUTENCOES = "manutencoes.json"
 
+def guardar_manutencoes():
+    with open(FICHEIRO_MANUTENCOES, "w", encoding="utf-8") as f:
+        json.dump(manutencoes, f, indent=4, ensure_ascii=False)
 
+def carregar_manutencoes():
+    global manutencoes
+    if os.path.exists(FICHEIRO_MANUTENCOES):
+        with open(FICHEIRO_MANUTENCOES, "r", encoding="utf-8") as f:
+            manutencoes = json.load(f)
 # ── VALIDAÇÃO DE DATAS (usada internamente) ───────────────────────────────────
 
 def _validar_data(data_str):
@@ -62,6 +73,7 @@ def criar_manutencao(id_carro,id_oficina, tipo, data_criacao, custo_orcamento, d
     Devolve (201, manutencao) em caso de sucesso.
     Devolve (500, mensagem) se os dados forem inválidos.
     """
+    carregar_manutencoes()
     # Validar data de criação antes de guardar
     if not _validar_data(data_criacao):
         return 500, "Data de criação inválida. Usa o formato DD-MM-YYYY."
@@ -92,6 +104,7 @@ def criar_manutencao(id_carro,id_oficina, tipo, data_criacao, custo_orcamento, d
         "estado":          "pendente"               # Estado inicial: pendente ou concluída
     }
     manutencoes.append(manut)
+    guardar_manutencoes()
     return 201, manut
 
 
@@ -104,6 +117,7 @@ def listar_manutencoes():
     Devolve (200, lista) em caso de sucesso.
     Devolve (404, mensagem) se não existirem manutenções.
     """
+    carregar_manutencoes()
     if not manutencoes:
         return 404, "Não existem manutenções registadas."
     return 200, manutencoes
@@ -114,7 +128,9 @@ def obter_manutencao(id_manut):
     Procura uma manutenção pelo seu ID.
     Devolve (200, manutencao) se encontrada.
     Devolve (404, mensagem) se não encontrada.
+
     """
+    carregar_manutencoes()
     resultado = encontrar_por_id(manutencoes, id_manut)
     if not resultado:
         return 404, f"Manutenção com ID {id_manut} não encontrada."
@@ -127,6 +143,7 @@ def listar_por_carro(id_carro):
     Devolve (200, lista) em caso de sucesso.
     Devolve (404, mensagem) se não existirem manutenções para esse carro.
     """
+    carregar_manutencoes()
     resultado = [m for m in manutencoes if m["id_carro"] == id_carro]
     if not resultado:
         return 404, f"Nenhuma manutenção encontrada para o carro com ID {id_carro}."
@@ -139,6 +156,7 @@ def listar_por_oficina(id_oficina):
     Devolve (200, lista) em caso de sucesso.
     Devolve (404, mensagem) se não existirem manutenções para essa oficina.
     """
+    carregar_manutencoes()
     resultado = [m for m in manutencoes if m["id_oficina"] == id_oficina]
     if not resultado:
         return 404, f"Nenhuma manutenção encontrada para a oficina com ID {id_oficina}."
@@ -147,15 +165,18 @@ def listar_por_oficina(id_oficina):
 
 def total_manutencoes():
     """Devolve (200, total) com o número total de manutenções registadas."""
+    carregar_manutencoes()
     return 200, len(manutencoes)
 
 
 def total_gasto():
     """
+
     Calcula o total gasto em todas as manutenções.
     Usa custo_final se disponível, senão usa custo_orcamento.
     Devolve (200, total).
     """
+    carregar_manutencoes()
     total = sum(
         m["custo_final"] if m["custo_final"] is not None else m["custo_orcamento"]
         for m in manutencoes
@@ -168,6 +189,7 @@ def media_gastos():
     Calcula a média de gastos por manutenção.
     Devolve (200, media) ou (404, mensagem) se não existirem manutenções.
     """
+    carregar_manutencoes()
     if not manutencoes:
         return 404, "Não existem manutenções para calcular média."
     _, total = total_gasto()
@@ -180,6 +202,7 @@ def manutencao_mais_cara():
     Usa custo_final se disponível, senão usa custo_orcamento.
     Devolve (200, manutencao) ou (404, mensagem) se lista vazia.
     """
+    carregar_manutencoes()
     if not manutencoes:
         return 404, "Não existem manutenções registadas."
     resultado = max(manutencoes, key=lambda m: m["custo_orcamento"] if m["custo_final"] is None else m["custo_final"])
@@ -198,6 +221,7 @@ def atualizar_manutencao(id_manut, dados):
     Devolve (404, mensagem) se não encontrada.
     Devolve (500, mensagem) se a data for inválida.
     """
+    carregar_manutencoes()
     codigo, resultado = obter_manutencao(id_manut)
     if codigo != 200:
         return 404, resultado
@@ -211,6 +235,7 @@ def atualizar_manutencao(id_manut, dados):
     for campo, valor in dados.items():
         if campo in campos_permitidos:
             resultado[campo] = valor
+    guardar_manutencoes()
     return 200, resultado
 
 
@@ -220,10 +245,12 @@ def atualizar_estado(id_manut, estado):
     Devolve (200, mensagem) se atualizado.
     Devolve (404, mensagem) se não encontrado.
     """
+    carregar_manutencoes()
     codigo, resultado = obter_manutencao(id_manut)
     if codigo != 200:
         return 404, resultado
     resultado["estado"] = estado
+    guardar_manutencoes()
     return 200, "Estado atualizado com sucesso."
 
 
@@ -235,8 +262,10 @@ def remover_manutencao(id_manut):
     Devolve (200, mensagem) em caso de sucesso.
     Devolve (404, mensagem) se não encontrada.
     """
+    carregar_manutencoes()
     codigo, resultado = obter_manutencao(id_manut)
     if codigo != 200:
         return 404, resultado
     manutencoes.remove(resultado)
+    guardar_manutencoes()
     return 200, f"Manutenção ID {id_manut} removida com sucesso."

@@ -10,9 +10,23 @@
 
 from utils import gerar_id,encontrar_por_id
 
+import json
+import os
+
 
 #lista em memoria das oficinas durante a execução
 oficinas = []
+FICHEIRO_OFICINAS = "oficinas.json"
+
+def guardar_oficinas():
+    with open(FICHEIRO_OFICINAS, "w", encoding="utf-8") as f:
+        json.dump(oficinas, f, indent=4, ensure_ascii=False)
+
+def carregar_oficinas():
+    global oficinas
+    if os.path.exists(FICHEIRO_OFICINAS):
+        with open(FICHEIRO_OFICINAS, "r", encoding="utf-8") as f:
+            oficinas = json.load(f)
 
 def adicionar_oficina(nome,morada,telefone,email):
     """ Cria uma nova oficina e adiciona-a à lista.
@@ -21,6 +35,7 @@ def adicionar_oficina(nome,morada,telefone,email):
     Devolve (409, mensagem) se o email já estiver registado.
     Devolve (500, mensagem) se os dados forem inválidos.
     """
+    carregar_oficinas()
     if not nome or not morada or not telefone or not email:
         return 500, "Todos os campos são obrigatórios."
 
@@ -36,6 +51,7 @@ def adicionar_oficina(nome,morada,telefone,email):
         "email": email
     }
     oficinas.append(oficina)
+    guardar_oficinas()
     return 201, oficina
 
 
@@ -44,7 +60,7 @@ def listar_oficinas():
     """Devolve a lista completa de oficinas.
     Devolve (200, lista) em caso de sucesso.
     Devolve (404, mensagem) se não existirem oficinas."""
-
+    carregar_oficinas()
     if not oficinas:
         return 404,"Não existem oficinas registadas."
     return 200,oficinas
@@ -55,6 +71,7 @@ def obter_oficina(id_oficina):
     Devolve (200, oficina) se encontrada.
     Devolve (404, mensagem) se não encontrada.
     """
+    carregar_oficinas()
     resultado = encontrar_por_id(oficinas, id_oficina)
     if not resultado:
         return 404,f"Oficina com ID {id_oficina} não encontrada."
@@ -71,7 +88,7 @@ def atualizar_oficina(id_oficina, dados):
     Devolve (200, oficina) em caso de sucesso.
     Devolve (404, mensagem) se não encontrada.
     Devolve (409, mensagem) se o novo email já estiver registado."""
-
+    carregar_oficinas()
     codigo, oficina = obter_oficina(id_oficina)
     if codigo != 200:
         return 404, oficina
@@ -85,6 +102,7 @@ def atualizar_oficina(id_oficina, dados):
     for campo, valor in dados.items():
         if campo in campos_permitidos:
             oficina[campo] = valor
+    guardar_oficinas()
     return 200, oficina
 
 
@@ -96,7 +114,7 @@ def remover_oficina(id_oficina, manutencoes):
     Devolve (200, mensagem) em caso de sucesso.
     Devolve (404, mensagem) se não encontrada.
     Devolve (409, mensagem) se tiver manutenções associadas."""
-
+    carregar_oficinas()
     codigo, oficina = obter_oficina(id_oficina)
     if codigo != 200:
         return 404, oficina
@@ -106,5 +124,6 @@ def remover_oficina(id_oficina, manutencoes):
         return 409, "Não é possível apagar a oficina pois tem manutenções associadas."
 
     oficinas.remove(oficina)
+    guardar_oficinas()
     return 200, id_oficina
 

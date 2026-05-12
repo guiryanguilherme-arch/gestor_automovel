@@ -9,12 +9,22 @@
 #   500 → erro nos dados fornecidos
 
 from utils import gerar_id, encontrar_por_id
-
+import json
+import os
 
 # Lista em memória que guarda todos os clientes durante a execução
 clientes = []
+FICHEIRO_CLIENTES = "clientes.json"
 
+def guardar_clientes():
+    with open(FICHEIRO_CLIENTES, "w", encoding="utf-8") as f:
+        json.dump(clientes, f, indent=4, ensure_ascii=False)
 
+def carregar_clientes():
+    global clientes
+    if os.path.exists(FICHEIRO_CLIENTES):
+        with open(FICHEIRO_CLIENTES, "r", encoding="utf-8") as f:
+            clientes = json.load(f)
 # ── CREATE ────────────────────────────────────────────────────────────────────
 
 def adicionar_cliente(nome, telefone, email, nif):
@@ -25,6 +35,7 @@ def adicionar_cliente(nome, telefone, email, nif):
     Devolve (409, mensagem) se o email ou nif já estiverem registados.
     Devolve (500, mensagem) se os dados forem inválidos.
     """
+    carregar_clientes()
     if not nome or not telefone or not email or not nif:
         return 500, "Todos os campos são obrigatórios."
 
@@ -44,6 +55,7 @@ def adicionar_cliente(nome, telefone, email, nif):
         "nif": nif
     }
     clientes.append(cliente)
+    guardar_clientes()
     return 201, cliente
 
 
@@ -55,6 +67,7 @@ def listar_clientes():
     Devolve (200, lista) em caso de sucesso.
     Devolve (404, mensagem) se não existirem clientes.
     """
+    carregar_clientes()
     if not clientes:
         return 404, "Não existem clientes registados."
     return 200, clientes
@@ -66,6 +79,7 @@ def obter_cliente(id_cliente):
     Devolve (200, cliente) se encontrado.
     Devolve (404, mensagem) se não encontrado.
     """
+    carregar_clientes()
     resultado = encontrar_por_id(clientes, id_cliente)
     if not resultado:
         return 404, f"Cliente com ID {id_cliente} não encontrado."
@@ -83,6 +97,7 @@ def atualizar_cliente(id_cliente, dados):
     Devolve (404, mensagem) se não encontrado.
     Devolve (409, mensagem) se o novo email já estiver registado.
     """
+    carregar_clientes()
     codigo, cliente = obter_cliente(id_cliente)
     if codigo != 200:
         return 404, cliente
@@ -96,6 +111,7 @@ def atualizar_cliente(id_cliente, dados):
     for campo, valor in dados.items():
         if campo in campos_permitidos:
             cliente[campo] = valor
+    guardar_clientes()
     return 200, cliente
 
 
@@ -109,6 +125,7 @@ def remover_cliente(id_cliente, carros):
     Devolve (404, mensagem) se não encontrado.
     Devolve (409, mensagem) se tiver carros associados.
     """
+    carregar_clientes()
     codigo, cliente = obter_cliente(id_cliente)
     if codigo != 200:
         return 404, cliente
@@ -118,4 +135,5 @@ def remover_cliente(id_cliente, carros):
         return 409, "Não é possível apagar o cliente pois tem carros associados."
 
     clientes.remove(cliente)
+    guardar_clientes()
     return 200,id_cliente

@@ -6,21 +6,31 @@
 #   200 → sucesso
 #   404 → não encontrado
 #   409 → conflito (ex: matrícula duplicada)
-#   500 → erro nos dados fornecidos#ah
+#   500 → erro nos dados fornecidos
+
 from utils import gerar_id, encontrar_por_id
-
-
-#hello world teste git again
+import json
+import os
 
 # Lista com os tipos de combustível aceites pelo sistema
 COMBUSTIVEIS = ["Gasolina", "Gasóleo", "Elétrico", "Híbrido", "GPL"]
 
 # Lista em memória que guarda todos os carros durante a execução
 carros = []
+FICHEIRO_CARROS = "carros.json"
 
-#teste
+#Persistência
+
+def guardar_carros():
+    with open(FICHEIRO_CARROS, "w", encoding="utf-8") as f:
+        json.dump(carros, f, indent=4, ensure_ascii=False)
 
 
+def carregar_carros():
+    global carros
+    if os.path.exists(FICHEIRO_CARROS):
+        with open(FICHEIRO_CARROS, "r", encoding="utf-8") as f:
+            carros = json.load(f)
 
 # ── CREATE ────────────────────────────────────────────────────────────────────
 
@@ -32,6 +42,7 @@ def adicionar_carro(id_cliente,marca, modelo, matricula, ano, mes, combustivel, 
     Devolve (409, mensagem) se a matrícula já estiver registada.
     Devolve (500, mensagem) se os dados forem inválidos.
     """
+    carregar_carros()
     # Verificar campos obrigatórios
     if not marca or not modelo or not matricula or not ano or not mes or not combustivel or not potencia_cv or not cilindrada_cc:
         return 500, "Todos os campos são obrigatórios."
@@ -54,6 +65,7 @@ def adicionar_carro(id_cliente,marca, modelo, matricula, ano, mes, combustivel, 
         "cilindrada_cc": cilindrada_cc
     }
     carros.append(carro)
+    guardar_carros()
     return 201, carro
 
 
@@ -65,6 +77,8 @@ def listar_carros():
     Devolve (200, lista) em caso de sucesso.
     Devolve (404, mensagem) se não existirem carros.
     """
+    carregar_carros()
+
     if not carros:
         return 404, "Não existem carros registados."
     return 200, carros
@@ -76,6 +90,8 @@ def obter_carro(id_carro):
     Devolve (200, carro) se encontrado.
     Devolve (404, mensagem) se não encontrado.
     """
+    carregar_carros()
+
     carro = encontrar_por_id(carros, id_carro)
     if not carro:
         return 404, f"Carro com ID {id_carro} não encontrado."
@@ -88,6 +104,7 @@ def procurar_por_matricula(matricula):
     Devolve (200, carro) se encontrado.
     Devolve (404, mensagem) se não encontrado.
     """
+    carregar_carros()
     resultado = next((c for c in carros if c["matricula"] == matricula.upper()), None)
     if not resultado:
         return 404, f"Nenhum carro encontrado com matrícula '{matricula.upper()}'."
@@ -100,6 +117,8 @@ def listar_carros_por_cliente(id_cliente):
     Devolve (200, lista) em caso de sucesso.
     Devolve (404, mensagem) se não existirem carros para esse cliente.
     """
+    carregar_carros()
+
     resultado = [c for c in carros if c["id_cliente"] == id_cliente]
     if not resultado:
         return 404, f"Nenhum carro encontrado para o cliente com ID {id_cliente}."
@@ -107,6 +126,7 @@ def listar_carros_por_cliente(id_cliente):
 
 def total_carros():
     """Devolve (200, total) com o número total de carros registados."""
+    carregar_carros()
     return 200, len(carros)
 
 
@@ -120,6 +140,7 @@ def atualizar_carro(id_carro, dados):
     Devolve (200, carro) em caso de sucesso.
     Devolve (404, mensagem) se o carro não for encontrado.
     """
+    carregar_carros()
     codigo, resultado = obter_carro(id_carro)
     if codigo != 200:
         return 404, resultado
@@ -128,6 +149,7 @@ def atualizar_carro(id_carro, dados):
     for campo, valor in dados.items():
         if campo in campos_permitidos:
             resultado[campo] = valor
+    guardar_carros()
     return 200, resultado
 
 
@@ -141,6 +163,8 @@ def remover_carro(id_carro, manutencoes):
     Devolve (200, mensagem) em caso de sucesso.
     Devolve (404, mensagem) se o carro não for encontrado.
     """
+    carregar_carros()
+
     codigo, resultado = obter_carro(id_carro)
     if codigo != 200:
         return 404, resultado
@@ -148,4 +172,5 @@ def remover_carro(id_carro, manutencoes):
     # Elimina em cascata todas as manutenções do carro
     manutencoes[:] = [m for m in manutencoes if m["id_carro"] != id_carro]
     carros.remove(resultado)
+    guardar_carros()
     return 200, f"Carro '{resultado['marca']} {resultado['modelo']}' removido com sucesso."
